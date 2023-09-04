@@ -134,7 +134,7 @@ task LDPruning {
    
   # all these numbers are from Wallace Wang
   command <<<
-    TIME_COMMAND="/usr/bin/time --verbose"
+    TIME_COMMAND=""  #"/usr/bin/time --verbose"
   
     ${TIME_COMMAND} /plink2 --vcf ~{vcf} \
     --rm-dup force-first \

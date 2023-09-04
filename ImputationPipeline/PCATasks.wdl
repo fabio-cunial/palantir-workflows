@@ -16,7 +16,7 @@ task PerformPCA {
     N_SOCKETS="$(lscpu | grep '^Socket(s):' | awk '{print $NF}')"
     N_CORES_PER_SOCKET="$(lscpu | grep '^Core(s) per socket:' | awk '{print $NF}')"
     N_THREADS=$(( 2 * ${N_SOCKETS} * ${N_CORES_PER_SOCKET} ))
-    TIME_COMMAND="/usr/bin/time --verbose"
+    TIME_COMMAND=""  #"/usr/bin/time --verbose"
     
     cp ~{bim} ~{basename}.bim
     cp ~{bed} ~{basename}.bed
