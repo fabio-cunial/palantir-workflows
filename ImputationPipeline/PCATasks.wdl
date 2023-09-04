@@ -7,6 +7,7 @@ task PerformPCA {
     File fam
     String basename
     Int mem = 8
+    Int disk = 400
   }
 
   # again, based on Wallace commands
@@ -31,7 +32,7 @@ task PerformPCA {
 
   runtime {
     docker: "us.gcr.io/broad-dsde-methods/flashpca_docker@sha256:2f3ff1614b00f9c8f271be85fd8875fbddccb7566712b537488d14a2526ccf7f"
-    disks: "local-disk 400 HDD"
+    disks: "local-disk " + disk + " HDD"
     memory: mem + " GB"
   }
 }

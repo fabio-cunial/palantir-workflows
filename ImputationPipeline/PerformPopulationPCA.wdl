@@ -4,75 +4,14 @@ import "PCATasks.wdl" as PCATasks
 # When you use a new population dataset 
 
 workflow PerformPopulationPCA {
-  input {
-    File population_vcf # Like Thousand Genomes
-    File population_vcf_index # Like Thousand Genomes
+  input {    
     String basename # what the outputs will be named
-    Array[File] imputed_array_vcfs # limit to TYPED and TYPED_ONLY sites before LD pruning.  Also will limit population to sites in imputed vcf for scoring correction
-    Array[File] original_array_vcfs
+    File SubsetToArrayVCF_output_vcf
+    Array[File] ExtractIDsTyped_ids
+    Array[File] SelectSitesOriginalArray_ids
     Array[File]? subset_to_sites
   }
  
-  # this task seaparates multiallelics and changes variant IDs to chr:pos:ref:alt1 (bc there are no multiallelics now, alt1=alt)
-  call SeparateMultiallelics {
-    input:
-      original_vcf = population_vcf,
-      original_vcf_index = population_vcf_index,
-      output_basename = basename + ".no_multiallelics"
-  }
-
-    #  we use sorted variant IDs so this step makes sure the variant IDs are in the format of chr:pos:allele1:allele2 where allele1
-    # and allele2 are sorted
-    call SortVariantIds {
-      input:
-        vcf = SeparateMultiallelics.output_vcf,
-        basename = basename + ".sorted_ids"
-    }
-
-  scatter (imputed_array_vcf in imputed_array_vcfs) {
-	  call UpdateVariantIds as UpdateVariantIdsImputed {
-		input:
-			vcf = imputed_array_vcf,
-			basename = basename + ".imputed_array.updated_ids."
-	  }
-
-
-
-	  call SortVariantIds as SortVariantIdsImputedArray {
-		input:
-			vcf = UpdateVariantIdsImputed.output_vcf,
-			basename = basename + ".imputed_array.sorted_ids"
-	  }
-
-	  call SelectTypedSites {
-		input:
-			vcf = SortVariantIdsImputedArray.output_vcf,
-			basename = basename
-	  }
-
-	  call ExtractIDs as ExtractIDsTyped {
-		  input:
-			  vcf = SelectTypedSites.output_vcf,
-			  output_basename = basename
-		}
-	}
-
-  call SubsetToArrayVCF {
-    input:
-        vcf = SortVariantIds.output_vcf,
-        vcf_index = SortVariantIds.output_vcf_index,
-        intervals = SelectTypedSites.output_vcf,
-        intervals_index = SelectTypedSites.output_vcf_index,
-        basename = basename + ".sorted_ids.subsetted"
-  }
-
-	scatter (original_array_vcf in original_array_vcfs) {
-	  call SelectSitesOriginalArray {
-		input:
-			vcf = original_array_vcf,
-			basename = basename
-	  }
-  }
  
   # this performs some basic QC steps (filtering by MAF, HWE, etc.), as well as 
   # generating a plink-style bim,bed,fam format that has been limited to LD pruned
@@ -80,10 +19,10 @@ workflow PerformPopulationPCA {
   # you can run the LDPruneToSites task that is at the bottom of this wdl
   call LDPruning {
     input:
-      vcf = SubsetToArrayVCF.output_vcf,
+      vcf = SubsetToArrayVCF_output_vcf,
       basename = basename,
-      imputed_typed_sites = ExtractIDsTyped.ids,
-      original_array_sites = SelectSitesOriginalArray.ids,
+      imputed_typed_sites = ExtractIDsTyped_ids,
+      original_array_sites = SelectSitesOriginalArray_ids,
       selected_sites = subset_to_sites
   }
   
@@ -114,9 +53,9 @@ workflow PerformPopulationPCA {
     File population_meansd = PerformPCA.mean_sd
     File population_pcs = PerformPCA.pcs 
     File pruning_sites_for_pca = LDPruning.prune_in 
-    File sorted_variant_id_dataset = SortVariantIds.output_vcf # this is what you should use as your population dataset for the 
+    #File sorted_variant_id_dataset = SortVariantIds.output_vcf # this is what you should use as your population dataset for the 
     # ScoringPart, since all the IDs will be matching 
-    File sorted_variant_id_dataset_index = SortVariantIds.output_vcf_index
+    #File sorted_variant_id_dataset_index = SortVariantIds.output_vcf_index
   }
 }
 
@@ -188,6 +127,7 @@ task LDPruning {
     Array[File] imputed_typed_sites
     Array[File]? selected_sites
     Int mem = 8
+    Int disk = 1000
     String basename
   }
    
@@ -226,7 +166,7 @@ task LDPruning {
 
   runtime {
     docker: "skwalker/plink2:first"
-    disks: "local-disk 400 HDD"
+    disks: "local-disk " + disk + " HDD"
     memory: mem + " GB"
   }
 }
@@ -280,6 +220,7 @@ task CheckPCA {
     File eigenvalues
     String basename
     Int mem = 8
+    Int disk = 400
   }
 
   command {
@@ -301,7 +242,7 @@ task CheckPCA {
 
   runtime {
     docker: "skwalker/flashpca:v1"
-    disks: "local-disk 400 HDD"
+    disks: "local-disk " + disk + " HDD"
     memory: mem + " GB"
   }
 }
