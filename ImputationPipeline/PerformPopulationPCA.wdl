@@ -1,7 +1,7 @@
 version 1.0
 
 import "PCATasks.wdl" as PCATasks
-# When you use a new population dataset 
+# When you use a new population dataset  
 
 workflow PerformPopulationPCA {
   input {    
