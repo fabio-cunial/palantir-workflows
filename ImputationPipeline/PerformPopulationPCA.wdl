@@ -128,6 +128,7 @@ task LDPruning {
     Array[File]? selected_sites
     Int mem = 8
     Int disk = 1000
+    Int n_cores
     String basename
   }
    
@@ -167,6 +168,7 @@ task LDPruning {
 
   runtime {
     docker: "skwalker/plink2:first"
+    cpu: n_cores
     disks: "local-disk " + disk + " HDD"
     memory: mem + " GB"
   }
