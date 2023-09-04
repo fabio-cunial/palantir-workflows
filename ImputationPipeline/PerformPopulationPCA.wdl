@@ -132,9 +132,10 @@ task LDPruning {
   }
    
   # all these numbers are from Wallace Wang
-  command {
+  command <<<
+    TIME_COMMAND="/usr/bin/time --verbose"
   
-    /plink2 --vcf ~{vcf} \
+    ${TIME_COMMAND} /plink2 --vcf ~{vcf} \
     --rm-dup force-first \
     --geno 0.05 \
     --hwe 1e-10 \
@@ -145,7 +146,7 @@ task LDPruning {
     --not-chr X \
     --out ~{basename} 
 
-    /plink2 --vcf ~{vcf} \
+    ${TIME_COMMAND} /plink2 --vcf ~{vcf} \
     --rm-dup force-first \
     --keep-allele-order \
     --extract ~{basename}.prune.in \
@@ -154,7 +155,7 @@ task LDPruning {
     --not-chr X \
     --out ~{basename}
 
-  }
+  >>>
 
   output {
     File prune_in = "~{basename}.prune.in"

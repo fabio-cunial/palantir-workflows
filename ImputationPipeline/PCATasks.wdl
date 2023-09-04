@@ -8,18 +8,22 @@ task PerformPCA {
     String basename
     Int mem = 8
     Int disk = 400
+    Int n_cores
   }
 
   # again, based on Wallace commands
-  command {
+  command <<<
+    N_SOCKETS="$(lscpu | grep '^Socket(s):' | awk '{print $NF}')"
+    N_CORES_PER_SOCKET="$(lscpu | grep '^Core(s) per socket:' | awk '{print $NF}')"
+    N_THREADS=$(( 2 * ${N_SOCKETS} * ${N_CORES_PER_SOCKET} ))
+    TIME_COMMAND="/usr/bin/time --verbose"
+    
     cp ~{bim} ~{basename}.bim
     cp ~{bed} ~{basename}.bed
     cp ~{fam} ~{basename}.fam
 
-    ~/flashpca/flashpca --bfile ~{basename} -n 16 -d 20 --outpc ${basename}.pc \
-    --outpve ${basename}.pc.variance --outload ${basename}.pc.loadings \
-    --outmeansd ${basename}.pc.meansd
-  }
+    ${TIME_COMMAND} ~/flashpca/flashpca --numthreads ${N_THREADS} --bfile ~{basename} -d 20 --outpc ${basename}.pc --outpve ${basename}.pc.variance --outload ${basename}.pc.loadings --outmeansd ${basename}.pc.meansd
+  >>>
 
   output {
     File pcs = "${basename}.pc"
@@ -32,8 +36,10 @@ task PerformPCA {
 
   runtime {
     docker: "us.gcr.io/broad-dsde-methods/flashpca_docker@sha256:2f3ff1614b00f9c8f271be85fd8875fbddccb7566712b537488d14a2526ccf7f"
-    disks: "local-disk " + disk + " HDD"
+    cpu: n_cores
     memory: mem + " GB"
+    disks: "local-disk " + disk + " HDD"
+    preemptible: 0
   }
 }
 
