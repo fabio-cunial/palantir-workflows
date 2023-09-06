@@ -136,11 +136,22 @@ task LDPruning {
   command <<<
     TIME_COMMAND=""  #"/usr/bin/time --verbose"
   
+# ORIGINAL:  
+#    ${TIME_COMMAND} /plink2 --vcf ~{vcf} \
+#    --rm-dup force-first \
+#    --geno 0.05 \
+#    --hwe 1e-10 \
+#    --extract-intersect ~{sep=" " original_array_sites} ~{sep = " " imputed_typed_sites} ~{sep=" " selected_sites} \
+#    --indep-pairwise 1000 50 0.2 \
+#    --maf 0.01 \
+#    --allow-extra-chr \
+#    --not-chr X \
+#    --out ~{basename} 
+    
     ${TIME_COMMAND} /plink2 --vcf ~{vcf} \
     --rm-dup force-first \
     --geno 0.05 \
     --hwe 1e-10 \
-#    --extract-intersect ~{sep=" " original_array_sites} ~{sep = " " imputed_typed_sites} ~{sep=" " selected_sites} \
     --indep-pairwise 1000 50 0.2 \
     --maf 0.01 \
     --allow-extra-chr \
