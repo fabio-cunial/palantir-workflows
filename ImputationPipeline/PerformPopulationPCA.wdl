@@ -7,9 +7,6 @@ workflow PerformPopulationPCA {
   input {    
     String basename # what the outputs will be named
     File SortVariantIds_output_vcf
-#    Array[File] ExtractIDsTyped_ids
-#    Array[File] SelectSitesOriginalArray_ids
-#    Array[File]? subset_to_sites
   }
  
  
@@ -20,10 +17,7 @@ workflow PerformPopulationPCA {
   call LDPruning {
     input:
       vcf = SortVariantIds_output_vcf,
-      basename = basename,
-#      imputed_typed_sites = ExtractIDsTyped_ids,
-#      original_array_sites = SelectSitesOriginalArray_ids,
-#      selected_sites = subset_to_sites
+      basename = basename
   }
   
   # perform PCA using flashPCA
@@ -123,9 +117,6 @@ task SelectTypedSites {
 task LDPruning {
   input {
     File vcf
-#    Array[File] original_array_sites
-#    Array[File] imputed_typed_sites
-#    Array[File]? selected_sites
     Int mem = 8
     Int disk = 1000
     Int n_cores
@@ -136,18 +127,6 @@ task LDPruning {
   command <<<
     TIME_COMMAND=""  #"/usr/bin/time --verbose"
   
-# ORIGINAL:  
-#    ${TIME_COMMAND} /plink2 --vcf ~{vcf} \
-#    --rm-dup force-first \
-#    --geno 0.05 \
-#    --hwe 1e-10 \
-#    --extract-intersect ~{sep=" " original_array_sites} ~{sep = " " imputed_typed_sites} ~{sep=" " selected_sites} \
-#    --indep-pairwise 1000 50 0.2 \
-#    --maf 0.01 \
-#    --allow-extra-chr \
-#    --not-chr X \
-#    --out ~{basename} 
-    
     ${TIME_COMMAND} /plink2 --vcf ~{vcf} \
     --rm-dup force-first \
     --geno 0.05 \
