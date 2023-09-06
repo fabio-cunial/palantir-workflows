@@ -7,9 +7,9 @@ workflow PerformPopulationPCA {
   input {    
     String basename # what the outputs will be named
     File SortVariantIds_output_vcf
-    Array[File] ExtractIDsTyped_ids
-    Array[File] SelectSitesOriginalArray_ids
-    Array[File]? subset_to_sites
+#    Array[File] ExtractIDsTyped_ids
+#    Array[File] SelectSitesOriginalArray_ids
+#    Array[File]? subset_to_sites
   }
  
  
@@ -21,9 +21,9 @@ workflow PerformPopulationPCA {
     input:
       vcf = SortVariantIds_output_vcf,
       basename = basename,
-      imputed_typed_sites = ExtractIDsTyped_ids,
-      original_array_sites = SelectSitesOriginalArray_ids,
-      selected_sites = subset_to_sites
+#      imputed_typed_sites = ExtractIDsTyped_ids,
+#      original_array_sites = SelectSitesOriginalArray_ids,
+#      selected_sites = subset_to_sites
   }
   
   # perform PCA using flashPCA
