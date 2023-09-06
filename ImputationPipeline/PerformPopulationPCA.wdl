@@ -6,7 +6,7 @@ import "PCATasks.wdl" as PCATasks
 workflow PerformPopulationPCA {
   input {    
     String basename # what the outputs will be named
-    File SubsetToArrayVCF_output_vcf
+    File SortVariantIds_output_vcf
     Array[File] ExtractIDsTyped_ids
     Array[File] SelectSitesOriginalArray_ids
     Array[File]? subset_to_sites
@@ -19,7 +19,7 @@ workflow PerformPopulationPCA {
   # you can run the LDPruneToSites task that is at the bottom of this wdl
   call LDPruning {
     input:
-      vcf = SubsetToArrayVCF_output_vcf,
+      vcf = SortVariantIds_output_vcf,
       basename = basename,
       imputed_typed_sites = ExtractIDsTyped_ids,
       original_array_sites = SelectSitesOriginalArray_ids,
