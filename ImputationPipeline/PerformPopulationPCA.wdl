@@ -123,9 +123,9 @@ task SelectTypedSites {
 task LDPruning {
   input {
     File vcf
-    Array[File] original_array_sites
-    Array[File] imputed_typed_sites
-    Array[File]? selected_sites
+#    Array[File] original_array_sites
+#    Array[File] imputed_typed_sites
+#    Array[File]? selected_sites
     Int mem = 8
     Int disk = 1000
     Int n_cores
@@ -140,7 +140,7 @@ task LDPruning {
     --rm-dup force-first \
     --geno 0.05 \
     --hwe 1e-10 \
-    --extract-intersect ~{sep=" " original_array_sites} ~{sep = " " imputed_typed_sites} ~{sep=" " selected_sites} \
+#    --extract-intersect ~{sep=" " original_array_sites} ~{sep = " " imputed_typed_sites} ~{sep=" " selected_sites} \
     --indep-pairwise 1000 50 0.2 \
     --maf 0.01 \
     --allow-extra-chr \
