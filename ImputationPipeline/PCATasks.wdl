@@ -22,7 +22,7 @@ task PerformPCA {
     cp ~{bed} ~{basename}.bed
     cp ~{fam} ~{basename}.fam
 
-    ${TIME_COMMAND} ~/flashpca/flashpca --numthreads ${N_THREADS} --bfile ~{basename} -d 20 --outpc ${basename}.pc --outpve ${basename}.pc.variance --outload ${basename}.pc.loadings --outmeansd ${basename}.pc.meansd
+    ${TIME_COMMAND} ~/flashpca/flashpca --numthreads ${N_THREADS} --bfile ~{basename} -d 20 --outpc ~{basename}.pc --outpve ~{basename}.pc.variance --outload ~{basename}.pc.loadings --outmeansd ~{basename}.pc.meansd
   >>>
 
   output {
