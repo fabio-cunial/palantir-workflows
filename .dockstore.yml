@@ -3,3 +3,6 @@ workflows:
   - name: PerformPopulationPCA
     subclass: WDL
     primaryDescriptorPath: /ImputationPipeline/PerformPopulationPCA.wdl
+  - name: ScoringImputedDataset
+    subclass: WDL
+    primaryDescriptorPath: /ImputationPipeline/ScoringPart.wdl
