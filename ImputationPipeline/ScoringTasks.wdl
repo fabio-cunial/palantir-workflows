@@ -13,7 +13,7 @@ task ScoreVcf {
     File? sites
     String? chromosome_encoding
     Boolean use_ref_alt_for_ids = false
-    Int n_cores
+    Int n_cores = 4
   }
 
   Int runtime_mem = base_mem + 2
@@ -634,7 +634,7 @@ task ExtractIDsPlink {
     File vcf
     Int disk_size = 2*ceil(size(vcf, "GB")) + 100
     Int mem = 8
-    Int n_cores
+    Int n_cores = 4
   }
 
   Int plink_mem = ceil(mem * 0.75 * 1000)
