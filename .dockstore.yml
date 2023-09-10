@@ -6,3 +6,6 @@ workflows:
   - name: ScoringImputedDataset
     subclass: WDL
     primaryDescriptorPath: /ImputationPipeline/ScoringPart.wdl
+  - name: TrainAncestryAdjustmentModel
+    subclass: WDL
+    primaryDescriptorPath: /ImputationPipeline/TrainAncestryAdjustmentModel.wdl

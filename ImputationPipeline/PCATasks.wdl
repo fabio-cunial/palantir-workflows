@@ -109,6 +109,7 @@ task ArrayVcfToPlinkDataset {
     File? subset_to_sites
     String basename
     Int mem = 8
+    Int n_cpus
   }
 
   Int disk_space =  3*ceil(size(vcf, "GB")) + 20
@@ -129,5 +130,6 @@ task ArrayVcfToPlinkDataset {
     docker: "us.gcr.io/broad-dsde-methods/plink2_docker@sha256:4455bf22ada6769ef00ed0509b278130ed98b6172c91de69b5bc2045a60de124"
     disks: "local-disk " + disk_space + " HDD"
     memory: mem + " GB"
+    cpu: n_cpus
   }
 }

@@ -13,6 +13,7 @@ task ScoreVcf {
     File? sites
     String? chromosome_encoding
     Boolean use_ref_alt_for_ids = false
+    Int n_cores
   }
 
   Int runtime_mem = base_mem + 2
@@ -36,6 +37,7 @@ task ScoreVcf {
     docker: "us.gcr.io/broad-dsde-methods/plink2_docker@sha256:4455bf22ada6769ef00ed0509b278130ed98b6172c91de69b5bc2045a60de124"
     disks: "local-disk " + disk_space + " HDD"
     memory: runtime_mem + " GB"
+    cpu: n_cores
   }
 }
 
@@ -632,6 +634,7 @@ task ExtractIDsPlink {
     File vcf
     Int disk_size = 2*ceil(size(vcf, "GB")) + 100
     Int mem = 8
+    Int n_cores
   }
 
   Int plink_mem = ceil(mem * 0.75 * 1000)
@@ -646,6 +649,7 @@ task ExtractIDsPlink {
     docker: "us.gcr.io/broad-dsde-methods/plink2_docker@sha256:4455bf22ada6769ef00ed0509b278130ed98b6172c91de69b5bc2045a60de124"
     disks: "local-disk " + disk_size + " HDD"
     memory: mem + " GB"
+    cpu: n_cores
   }
 }
 
