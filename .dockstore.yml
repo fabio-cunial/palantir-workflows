@@ -9,3 +9,6 @@ workflows:
   - name: TrainAncestryAdjustmentModel
     subclass: WDL
     primaryDescriptorPath: /ImputationPipeline/TrainAncestryAdjustmentModel.wdl
+  - name: UpdateVariantIdsFabio
+    subclass: WDL
+    primaryDescriptorPath: /ImputationPipeline/UpdateVariantIdsFabio.wdl
