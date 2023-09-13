@@ -29,7 +29,7 @@ task UpdateVariantIdsImpl {
     }
 
     command <<<
-        bcftools annotate --set-id '%CHROM\:%POS\%FIRST_ALT:%REF' ~{vcf} -O z -o ~{basename}.vcf.gz
+        zcat ~{vcf} | awk -v OFS='\t' '{ if ( !($1 ~ /^"#"/) && $5 < $4)  $3=$1":"$2":"$5":"$4; else $3=$1":"$2":"$4":"$5; print $0 }' | bgzip -c > ~{basename}.vcf.gz
     >>>
 
     output {
