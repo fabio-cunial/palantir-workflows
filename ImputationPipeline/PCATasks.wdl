@@ -116,7 +116,7 @@ task ArrayVcfToPlinkDataset {
 
   command {
 
-    /plink2 --vcf ~{vcf} --extract-intersect ~{pruning_sites} ~{subset_to_sites} --allow-extra-chr --set-all-var-ids @:#:\$1:\$2 \
+    /plink2 --vcf ~{vcf} --extract-intersect ~{pruning_sites} ~{subset_to_sites} --allow-extra-chr \
     --new-id-max-allele-len 1000 missing --out ~{basename} --make-bed --rm-dup force-first
   }
 
@@ -127,7 +127,7 @@ task ArrayVcfToPlinkDataset {
   }
 
   runtime {
-    docker: "skwalker/plink2:first"
+    docker: "us.gcr.io/broad-dsde-methods/plink2_docker@sha256:4455bf22ada6769ef00ed0509b278130ed98b6172c91de69b5bc2045a60de124"
     disks: "local-disk " + disk_space + " HDD"
     memory: mem + " GB"
     cpu: n_cpus
